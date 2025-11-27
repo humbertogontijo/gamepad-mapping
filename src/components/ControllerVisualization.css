@@ -1,0 +1,612 @@
+.controller-wrapper {
+  display: flex;
+  justify-content: center;
+  padding: 2rem;
+  position: relative;
+  background: #fafafa;
+  border-radius: 8px;
+}
+
+.controller {
+  position: relative;
+  width: 800px;
+  height: 621px;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* SVG Background */
+.controller-svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+/* Visual elements (non-interactive) */
+.stick-visual {
+  position: absolute;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.stick-visual-left {
+  left: 104.522px;
+  top: 164.335px;
+}
+
+.stick-visual-right {
+  left: 460px;
+  top: 311px;
+}
+
+.stick-indicator {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(76, 175, 80, 0.8);
+  border: 3px solid #4caf50;
+  position: absolute;
+  transition: transform 0.05s linear;
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+  pointer-events: none;
+}
+
+/* Base button styles */
+.controller > *:not(.controller-svg):not(.stick-visual):not(.mapping-badge) {
+  position: absolute;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+/* Triggers */
+.trigger {
+  top: 0;
+  width: 80px;
+  height: 60px;
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  overflow: visible;
+  border-radius: 4px;
+}
+
+.trigger-left {
+  left: 120px;
+}
+
+.trigger-right {
+  right: 120px;
+}
+
+.trigger:hover {
+  background: rgba(0, 122, 255, 0.1);
+}
+
+.trigger.selected {
+  background: rgba(0, 122, 255, 0.15);
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.4);
+}
+
+.trigger-visual {
+  width: 60px;
+  background: rgba(76, 175, 80, 0.6);
+  transition: height 0.05s linear;
+  border-radius: 4px 4px 0 0;
+  min-height: 5px;
+}
+
+.trigger-visual.pressed {
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+  background: rgba(76, 175, 80, 0.9);
+}
+
+.trigger-label {
+  position: absolute;
+  bottom: -20px;
+  color: #333;
+  font-size: 0.7rem;
+  font-weight: bold;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+/* Bumpers */
+.bumper {
+  top: 20px;
+  width: 100px;
+  height: 30px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-size: 0.8rem;
+  font-weight: bold;
+  border-radius: 4px;
+}
+
+.bumper-left {
+  left: 50px;
+}
+
+.bumper-right {
+  right: 50px;
+}
+
+.bumper.pressed {
+  background: rgba(76, 175, 80, 0.3);
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.6);
+}
+
+.bumper.selected {
+  border: 3px solid #007aff;
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.6);
+}
+
+/* Stick Buttons */
+.stick-button {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(76, 175, 80, 0.2);
+  border: 2px solid #4caf50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-size: 0.7rem;
+  font-weight: bold;
+  transform: translate(-50%, -50%);
+}
+
+.stick-button-left {
+  left: 159.292px;
+  top: 219.105px;
+}
+
+.stick-button-right {
+  left: 515.293px;
+  top: 366.013px;
+}
+
+.stick-button.pressed {
+  background: rgba(76, 175, 80, 0.6);
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+}
+
+.stick-button.selected {
+  border-color: #007aff;
+  border-width: 3px;
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.6);
+}
+
+/* D-Pad Buttons - DualSense style: shape points inward, icon points outward */
+.dpad-button {
+  width: 44px;
+  height: 44px;
+  background: rgba(76, 175, 80, 0.4);
+  border: none;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  font-size: 1rem;
+  font-weight: bold;
+  box-sizing: border-box;
+  filter: drop-shadow(0 0 0 #4caf50);
+}
+
+.dpad-button > *:not(.mapping-badge) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Up button: shape points down (inward), icon ↑ points up (outward) */
+.dpad-up {
+  left: 276px;
+  top: 326px; /* Moved apart from center */
+  height: 56px;
+  transform: translate(-50%, -50%);
+  clip-path: polygon(50% 100%, 100% 60%, 100% 0%, 0% 0%, 0% 60%);
+}
+
+/* Down button: shape points up (inward), icon ↓ points down (outward) */
+.dpad-down {
+  left: 276px;
+  top: 396px; /* Moved apart from center */
+  height: 56px;
+  transform: translate(-50%, -50%);
+  clip-path: polygon(50% 0%, 100% 40%, 100% 100%, 0% 100%, 0% 40%);
+}
+
+.dpad-down::before {
+  clip-path: polygon(50% 0%, 100% 40%, 100% 100%, 0% 100%, 0% 40%);
+  border-top: none; /* Remove border where buttons meet */
+}
+
+/* Left button: shape points right (inward), icon ← points left (outward) */
+.dpad-left {
+  left: 242px; /* Moved apart from center */
+  top: 360px;
+  width: 56px;
+  transform: translate(-50%, -50%);
+  clip-path: polygon(100% 50%, 60% 0%, 0% 0%, 0% 100%, 60% 100%);
+}
+
+.dpad-left::before {
+  clip-path: polygon(100% 50%, 60% 0%, 0% 0%, 0% 100%, 60% 100%);
+  border-right: none; /* Remove border where buttons meet */
+}
+
+/* Right button: shape points left (inward), icon → points right (outward) */
+.dpad-right {
+  left: 312px; /* Moved apart from center */
+  top: 360px;
+  width: 56px;
+  transform: translate(-50%, -50%);
+  clip-path: polygon(0% 50%, 40% 0%, 100% 0%, 100% 100%, 40% 100%);
+}
+
+.dpad-right::before {
+  clip-path: polygon(0% 50%, 40% 0%, 100% 0%, 100% 100%, 40% 100%);
+  border-left: none; /* Remove border where buttons meet */
+}
+
+.dpad-button.pressed {
+  background: rgba(76, 175, 80, 0.8);
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+  transform: translate(-50%, -50%) scale(0.95);
+}
+
+.dpad-button.selected {
+  filter: drop-shadow(0 0 0 #007aff) drop-shadow(0 0 0 #007aff) drop-shadow(0 0 0 #007aff);
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.6);
+}
+
+.dpad-up.selected {
+  filter: drop-shadow(1px 0 0 #007aff) drop-shadow(-1px 0 0 #007aff) drop-shadow(0 -1px 0 #007aff);
+}
+
+.dpad-down.selected {
+  filter: drop-shadow(1px 0 0 #007aff) drop-shadow(-1px 0 0 #007aff) drop-shadow(0 1px 0 #007aff);
+}
+
+.dpad-left.selected {
+  filter: drop-shadow(0 1px 0 #007aff) drop-shadow(0 -1px 0 #007aff) drop-shadow(-1px 0 0 #007aff);
+}
+
+.dpad-right.selected {
+  filter: drop-shadow(0 1px 0 #007aff) drop-shadow(0 -1px 0 #007aff) drop-shadow(1px 0 0 #007aff);
+}
+
+/* Center Buttons */
+.center-button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(76, 175, 80, 0.2);
+  border: 2px solid #4caf50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #333;
+  transform: translate(-50%, -50%);
+}
+
+.center-button-back {
+  left: 314px;
+  top: 225px;
+}
+
+.center-button-start {
+  left: 488px;
+  top: 225px;
+}
+
+.center-button-16 {
+  left: 401px;
+  top: 225px;
+}
+
+.center-button-17 {
+  left: 401px;
+  top: 152px;
+}
+
+.center-button .button-icon {
+  font-size: 1rem;
+}
+
+.center-button .button-label {
+  font-size: 0.75rem;
+  font-weight: bold;
+}
+
+.center-button.pressed {
+  background: rgba(76, 175, 80, 0.8);
+  box-shadow: 0 0 15px rgba(76, 175, 80, 0.8);
+  transform: translate(-50%, -50%) scale(0.9);
+}
+
+.center-button.selected {
+  border-color: #007aff;
+  border-width: 3px;
+  box-shadow: 0 0 20px rgba(0, 122, 255, 0.6);
+}
+
+/* Face Buttons */
+.face-button {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  border: 3px solid;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  transform: translate(-50%, -50%);
+}
+
+.face-y {
+  background: rgba(255, 152, 0, 0.8);
+  border-color: #ff9800;
+  left: 637px;
+  top: 157px;
+}
+
+.face-x {
+  background: rgba(33, 150, 243, 0.8);
+  border-color: #2196f3;
+  left: 574px;
+  top: 220px;
+}
+
+.face-b {
+  background: rgba(244, 67, 54, 0.8);
+  border-color: #f44336;
+  left: 700px;
+  top: 220px;
+}
+
+.face-a {
+  background: rgba(76, 175, 80, 0.8);
+  border-color: #4caf50;
+  left: 637.806px;
+  top: 283.996px;
+}
+
+.face-button.pressed {
+  transform: translate(-50%, -50%) scale(0.9);
+  box-shadow: 0 0 25px currentColor;
+  opacity: 1;
+}
+
+.face-button.selected {
+  border-color: #007aff;
+  border-width: 4px;
+  box-shadow: 0 0 25px rgba(0, 122, 255, 0.8);
+}
+
+/* Mapping Badges */
+.mapping-badge {
+  position: absolute;
+  bottom: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #2196f3;
+  color: #fff;
+  padding: 3px 6px;
+  border-radius: 3px;
+  font-size: 0.65rem;
+  font-weight: bold;
+  line-height: 1.2;
+  white-space: nowrap;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  height: auto;
+  min-height: auto;
+}
+
+/* Stick button badges need special positioning since buttons use translate(-50%, -50%) */
+.stick-button .mapping-badge {
+  bottom: auto;
+  top: calc(50% + 25px + 4px); /* Center + half button height (25px) + margin */
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.stick-mapping-left,
+.stick-mapping-right {
+  bottom: auto;
+  height: auto;
+  width: auto;
+  min-height: auto;
+  max-height: none;
+  display: inline-block;
+  vertical-align: top;
+}
+
+.stick-mapping-left {
+  left: 159.292px;
+  top: 244px; /* 219.105 (stick center) + 25px (half button height) + 4px margin */
+  transform: translateX(-50%);
+}
+
+.stick-mapping-right {
+  left: 515.293px;
+  top: 391px; /* 366.013 (stick center) + 25px (half button height) + 4px margin */
+  transform: translateX(-50%);
+}
+
+/* Stick Direction Buttons */
+.stick-direction {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(0, 122, 255, 0.2);
+  border: 2px solid rgba(0, 122, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transform: translate(-50%, -50%);
+  transition: all 0.1s ease;
+  font-size: 0.6rem;
+  z-index: 5;
+}
+
+.stick-direction:hover {
+  background: rgba(0, 122, 255, 0.3);
+  border-color: rgba(0, 122, 255, 0.8);
+  transform: translate(-50%, -50%) scale(1.2);
+}
+
+.stick-direction.selected {
+  background: rgba(0, 122, 255, 0.5);
+  border-color: #007aff;
+  border-width: 3px;
+  box-shadow: 0 0 15px rgba(0, 122, 255, 0.6);
+}
+
+.stick-direction.has-mapping {
+  background: rgba(76, 175, 80, 0.3);
+  border-color: #4caf50;
+}
+
+.stick-direction.has-mapping.selected {
+  background: rgba(0, 122, 255, 0.5);
+  border-color: #007aff;
+}
+
+/* Left Stick Directions */
+.stick-direction-left.stick-direction-up {
+  left: 159.292px;
+  top: 189.105px; /* 30px above center */
+}
+
+.stick-direction-left.stick-direction-down {
+  left: 159.292px;
+  top: 249.105px; /* 30px below center */
+}
+
+.stick-direction-left.stick-direction-left {
+  left: 129.292px; /* 30px left of center */
+  top: 219.105px;
+}
+
+.stick-direction-left.stick-direction-right {
+  left: 189.292px; /* 30px right of center */
+  top: 219.105px;
+}
+
+.stick-direction-left.stick-direction-up-left {
+  left: 139.292px; /* ~21px left and up */
+  top: 199.105px;
+}
+
+.stick-direction-left.stick-direction-up-right {
+  left: 179.292px; /* ~21px right and up */
+  top: 199.105px;
+}
+
+.stick-direction-left.stick-direction-down-left {
+  left: 139.292px; /* ~21px left and down */
+  top: 239.105px;
+}
+
+.stick-direction-left.stick-direction-down-right {
+  left: 179.292px; /* ~21px right and down */
+  top: 239.105px;
+}
+
+/* Right Stick Directions */
+.stick-direction-right.stick-direction-up {
+  left: 515.293px;
+  top: 336.013px; /* 30px above center */
+}
+
+.stick-direction-right.stick-direction-down {
+  left: 515.293px;
+  top: 396.013px; /* 30px below center */
+}
+
+.stick-direction-right.stick-direction-left {
+  left: 485.293px; /* 30px left of center */
+  top: 366.013px;
+}
+
+.stick-direction-right.stick-direction-right {
+  left: 545.293px; /* 30px right of center */
+  top: 366.013px;
+}
+
+.stick-direction-right.stick-direction-up-left {
+  left: 495.293px; /* ~21px left and up */
+  top: 346.013px;
+}
+
+.stick-direction-right.stick-direction-up-right {
+  left: 535.293px; /* ~21px right and up */
+  top: 346.013px;
+}
+
+.stick-direction-right.stick-direction-down-left {
+  left: 495.293px; /* ~21px left and down */
+  top: 386.013px;
+}
+
+.stick-direction-right.stick-direction-down-right {
+  left: 535.293px; /* ~21px right and down */
+  top: 386.013px;
+}
+
+.stick-direction .mapping-badge-small {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  font-size: 0.5rem;
+  padding: 1px 3px;
+  background: #4caf50;
+  color: white;
+  border-radius: 3px;
+  white-space: nowrap;
+  z-index: 10;
+  min-width: 12px;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .controller {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
+    aspect-ratio: 800 / 621;
+  }
+
+  .controller-svg {
+    width: 100%;
+    height: 100%;
+  }
+}

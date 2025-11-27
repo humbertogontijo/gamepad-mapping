@@ -1,0 +1,284 @@
+.gamepad-container {
+  background: linear-gradient(135deg, #1e1e1e 0%, #2d2d2d 100%);
+  border-radius: 20px;
+  padding: 2rem;
+  margin: 1rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.gamepad-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.gamepad-header h2 {
+  margin: 0 0 0.5rem 0;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.gamepad-id {
+  margin: 0;
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.gamepad-body {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  margin-bottom: 2rem;
+}
+
+.gamepad-section {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+/* D-Pad */
+.dpad-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 50px);
+  grid-template-rows: repeat(3, 50px);
+  gap: 2px;
+  background: #333;
+  padding: 2px;
+  border-radius: 8px;
+}
+
+.dpad button {
+  border: none;
+  background: #444;
+  color: #fff;
+  font-size: 1.2rem;
+  border-radius: 4px;
+  cursor: default;
+  transition: all 0.1s ease;
+}
+
+.dpad button.pressed {
+  background: #4caf50;
+  transform: scale(0.95);
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.dpad-middle {
+  grid-column: 1 / 4;
+  display: flex;
+  justify-content: space-between;
+  gap: 2px;
+}
+
+.dpad-middle button {
+  flex: 1;
+}
+
+/* Sticks */
+.stick-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.stick-label {
+  color: #fff;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.stick {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: #333;
+  border: 2px solid #555;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.stick-indicator {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #4caf50;
+  position: absolute;
+  transition: transform 0.05s linear;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.stick-values {
+  color: #888;
+  font-size: 0.75rem;
+  text-align: center;
+  min-width: 150px;
+}
+
+/* Face Buttons */
+.face-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 60px);
+  grid-template-rows: repeat(2, 60px);
+  gap: 10px;
+}
+
+.face-buttons button {
+  border: none;
+  border-radius: 50%;
+  background: #444;
+  color: #fff;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: default;
+  transition: all 0.1s ease;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.face-buttons button.pressed {
+  transform: scale(0.9);
+  box-shadow: 0 0 20px rgba(76, 175, 80, 0.8);
+}
+
+.face-buttons button:nth-child(1) {
+  background: #4caf50;
+  grid-column: 2;
+  grid-row: 2;
+}
+
+.face-buttons button:nth-child(2) {
+  background: #f44336;
+  grid-column: 1;
+  grid-row: 2;
+}
+
+.face-buttons button:nth-child(3) {
+  background: #2196f3;
+  grid-column: 2;
+  grid-row: 1;
+}
+
+.face-buttons button:nth-child(4) {
+  background: #ff9800;
+  grid-column: 1;
+  grid-row: 1;
+}
+
+/* Shoulder Buttons */
+.shoulder-buttons {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.shoulder-buttons button {
+  border: none;
+  background: #444;
+  color: #fff;
+  padding: 0.5rem 1.5rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  cursor: default;
+  transition: all 0.1s ease;
+}
+
+.shoulder-buttons button.pressed {
+  background: #4caf50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+.trigger-container {
+  color: #888;
+  font-size: 0.75rem;
+}
+
+.trigger-value {
+  text-align: center;
+}
+
+/* Center Buttons */
+.center-section {
+  justify-content: center;
+}
+
+.center-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.center-buttons button {
+  border: none;
+  background: #444;
+  color: #fff;
+  padding: 0.5rem 1rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: default;
+  transition: all 0.1s ease;
+}
+
+.center-buttons button.pressed {
+  background: #4caf50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+}
+
+/* All Buttons */
+.all-buttons {
+  margin-top: 2rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.all-buttons h3 {
+  color: #fff;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.buttons-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 0.5rem;
+}
+
+.buttons-grid button {
+  border: none;
+  background: #444;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  cursor: default;
+  transition: all 0.1s ease;
+}
+
+.buttons-grid button.pressed {
+  background: #4caf50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  transform: scale(0.95);
+}
+
+@media (max-width: 768px) {
+  .gamepad-body {
+    flex-direction: column;
+  }
+  
+  .gamepad-section {
+    width: 100%;
+  }
+}
+
