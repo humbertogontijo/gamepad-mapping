@@ -1,3 +1,10 @@
+# 1.0.0 (2025-11-29)
+
+
+### Features
+
+* Moving to GitHub ([c249e73](https://github.com/humbertogontijo/gamepad-mapping/commit/c249e73abc0b29943daa5343990b4397df978034))
+
 ## [1.1.1](https://github.com/humbertogontijo/gamepad-mapping/compare/1.1.0...1.1.1) (2025-11-29)
 
 
