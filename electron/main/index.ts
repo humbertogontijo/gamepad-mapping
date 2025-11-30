@@ -56,6 +56,7 @@ function createWindow() {
     icon: path.join(process.env.VITE_PUBLIC, "icon.png"),
     webPreferences: {
       preload,
+      backgroundThrottling: false,
     },
   });
 
