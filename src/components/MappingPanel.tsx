@@ -165,7 +165,7 @@ export function MappingPanel({
                   className="mapping-item"
                 >
                   <div className="mapping-item-label">
-                    {axisMapping.stickIndex === 0 ? "LS" : "RS"}
+                    {axisMapping.stickIndex === 0 ? "LS" : "RS"} - {DIRECTION_LABELS[axisMapping.direction]}
                   </div>
                   <div className="mapping-item-value">
                     <span className="mapped-key-small">

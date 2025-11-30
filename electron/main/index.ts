@@ -205,7 +205,7 @@ keyboard.config.autoDelayMs = 0;
 // Convert key name to nut-js Key enum
 function getNutKey(key: string): Key | null {
   // Check if it's a special key
-  if (keyMap[key]) {
+  if (keyMap[key] !== undefined) {
     return keyMap[key];
   }
   // Single character keys
