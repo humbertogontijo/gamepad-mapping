@@ -3,9 +3,12 @@ import {
   app,
   BrowserWindow,
   ipcMain,
+  Menu,
+  nativeImage,
   screen,
   shell,
   systemPreferences,
+  Tray,
 } from "electron";
 import os from "node:os";
 import path from "node:path";
@@ -54,6 +57,8 @@ function createWindow() {
     width: 1580,
     height: 960,
     icon: path.join(process.env.VITE_PUBLIC, "icon.png"),
+    show: false,
+    skipTaskbar: false,
     webPreferences: {
       preload,
       backgroundThrottling: false,
@@ -298,22 +303,40 @@ ipcMain.handle(
   }
 );
 
+
 // Handle key toggle requests
 ipcMain.handle("key-toggle", async (_event, key: string, down: boolean) => {
   try {
-    const nutKey = getNutKey(key);
-    if (nutKey !== null) {
-      if (down) {
-        await keyboard.pressKey(nutKey);
-      } else {
-        await keyboard.releaseKey(nutKey);
-      }
-    } else {
-      console.warn(`Unknown key: ${key}`);
-      return { success: false, error: `Unknown key: ${key}` };
-    }
+    if (key.includes("+")) {
+      const keys = key.split("+");
+      const nutKeys = keys.map((key) => getNutKey(key)).filter((key) => key !== null);
 
-    return { success: true };
+      if (nutKeys.length == 0) {
+        console.warn(`Unsupported key combo: ${key}`);
+        return { success: false, error: `Unsupported key combo: ${key}` };
+      }
+
+      if (down) {
+        await keyboard.pressKey(...nutKeys);
+      } else {
+        await keyboard.releaseKey(...nutKeys);
+      }
+
+      return { success: true };
+    } else {
+      const nutKey = getNutKey(key);
+      if (nutKey !== null) {
+        if (down) {
+          await keyboard.pressKey(nutKey);
+        } else {
+          await keyboard.releaseKey(nutKey);
+        }
+      } else {
+        console.warn(`Unknown key: ${key}`);
+        return { success: false, error: `Unknown key: ${key}` };
+      }
+      return { success: true };
+    }
   } catch (error) {
     console.error("Error simulating key:", error);
     return { success: false, error: String(error) };
@@ -348,10 +371,67 @@ ipcMain.on("gamepad-data", (_event, gamepads) => {
   });
 });
 
+app.setLoginItemSettings({
+  openAtLogin: true,
+});
+
+
+let tray = null;
+
+function createTray() {
+  const trayIconPath = path.join(process.env.VITE_PUBLIC, "trayTemplate@2x.png");
+  const image = nativeImage.createFromPath(trayIconPath);
+  image.setTemplateImage(true);
+
+  tray = new Tray(image);
+  image.setTemplateImage(true);
+
+  const loginSettings = app.getLoginItemSettings();
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Show App', click: () => { win?.show(); win?.focus(); } },
+    {
+      label: 'Open at Login',
+      type: 'checkbox',
+      checked: loginSettings.openAtLogin,
+      click: (menuItem) => {
+        app.setLoginItemSettings({
+          openAtLogin: menuItem.checked,
+        });
+      },
+    },
+    {
+      label: 'Show in Dock',
+      type: 'checkbox',
+      checked: app.dock?.isVisible() ?? true,
+      visible: process.platform === 'darwin',
+      click: (menuItem) => {
+        if (menuItem.checked) {
+          app.dock?.show();
+        } else {
+          app.dock?.hide();
+        }
+      },
+    },
+    { type: 'separator' },
+    { label: 'Quit', click: () => app.quit() },
+
+  ]);
+
+  tray.setToolTip('Gamepad Mapping');
+  tray.setContextMenu(contextMenu);
+}
+
 app.whenReady().then(() => {
+  if (process.platform === "darwin") {
+    app.dock?.hide();
+  }
+
   createWindow();
   // Check permissions
   checkAccessibilityPermissions();
   // Start gamepad polling
   startGamepadPolling();
+
+  createTray();
 });
