@@ -298,22 +298,40 @@ ipcMain.handle(
   }
 );
 
+
 // Handle key toggle requests
 ipcMain.handle("key-toggle", async (_event, key: string, down: boolean) => {
   try {
-    const nutKey = getNutKey(key);
-    if (nutKey !== null) {
-      if (down) {
-        await keyboard.pressKey(nutKey);
-      } else {
-        await keyboard.releaseKey(nutKey);
-      }
-    } else {
-      console.warn(`Unknown key: ${key}`);
-      return { success: false, error: `Unknown key: ${key}` };
-    }
+    if (key.includes("+")) {
+      const keys = key.split("+");
+      const nutKeys = keys.map((key) => getNutKey(key)).filter((key) => key !== null);
 
-    return { success: true };
+      if (nutKeys.length == 0) {
+        console.warn(`Unsupported key combo: ${key}`);
+        return { success: false, error: `Unsupported key combo: ${key}` };
+      }
+
+      if (down) {
+        await keyboard.pressKey(...nutKeys);
+      } else {
+        await keyboard.releaseKey(...nutKeys);
+      }
+
+      return { success: true };
+    } else {
+      const nutKey = getNutKey(key);
+      if (nutKey !== null) {
+        if (down) {
+          await keyboard.pressKey(nutKey);
+        } else {
+          await keyboard.releaseKey(nutKey);
+        }
+      } else {
+        console.warn(`Unknown key: ${key}`);
+        return { success: false, error: `Unknown key: ${key}` };
+      }
+      return { success: true };
+    }
   } catch (error) {
     console.error("Error simulating key:", error);
     return { success: false, error: String(error) };

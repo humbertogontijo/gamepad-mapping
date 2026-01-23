@@ -54,7 +54,6 @@ export function ButtonMappingPanel({
         <h3>{getButtonLabel(buttonIndex)}</h3>
         <p className="panel-subtitle">Configure button mapping</p>
       </div>
-      
       <div className="stick-directions-list">
         <div
           className={`button-mapping-item ${btnMapping ? 'has-mapping' : ''} ${button?.pressed ? 'active' : ''} ${isEditing ? 'editing' : ''}`}
@@ -93,7 +92,6 @@ export function ButtonMappingPanel({
           )}
         </div>
       )}
-      
       <MappingActions
         hasUnsavedChanges={hasUnsavedChanges && isEditing}
         onApplyChanges={() => {
