@@ -3,9 +3,12 @@ import {
   app,
   BrowserWindow,
   ipcMain,
+  Menu,
+  nativeImage,
   screen,
   shell,
   systemPreferences,
+  Tray,
 } from "electron";
 import os from "node:os";
 import path from "node:path";
@@ -54,6 +57,8 @@ function createWindow() {
     width: 1580,
     height: 960,
     icon: path.join(process.env.VITE_PUBLIC, "icon.png"),
+    show: false,
+    skipTaskbar: false,
     webPreferences: {
       preload,
       backgroundThrottling: false,
@@ -366,10 +371,67 @@ ipcMain.on("gamepad-data", (_event, gamepads) => {
   });
 });
 
+app.setLoginItemSettings({
+  openAtLogin: true,
+});
+
+
+let tray = null;
+
+function createTray() {
+  const trayIconPath = path.join(process.env.VITE_PUBLIC, "trayTemplate@2x.png");
+  const image = nativeImage.createFromPath(trayIconPath);
+  image.setTemplateImage(true);
+
+  tray = new Tray(image);
+  image.setTemplateImage(true);
+
+  const loginSettings = app.getLoginItemSettings();
+
+  const contextMenu = Menu.buildFromTemplate([
+    { label: 'Show App', click: () => { win?.show(); win?.focus(); } },
+    {
+      label: 'Open at Login',
+      type: 'checkbox',
+      checked: loginSettings.openAtLogin,
+      click: (menuItem) => {
+        app.setLoginItemSettings({
+          openAtLogin: menuItem.checked,
+        });
+      },
+    },
+    {
+      label: 'Show in Dock',
+      type: 'checkbox',
+      checked: app.dock?.isVisible() ?? true,
+      visible: process.platform === 'darwin',
+      click: (menuItem) => {
+        if (menuItem.checked) {
+          app.dock?.show();
+        } else {
+          app.dock?.hide();
+        }
+      },
+    },
+    { type: 'separator' },
+    { label: 'Quit', click: () => app.quit() },
+
+  ]);
+
+  tray.setToolTip('Gamepad Mapping');
+  tray.setContextMenu(contextMenu);
+}
+
 app.whenReady().then(() => {
+  if (process.platform === "darwin") {
+    app.dock?.hide();
+  }
+
   createWindow();
   // Check permissions
   checkAccessibilityPermissions();
   // Start gamepad polling
   startGamepadPolling();
+
+  createTray();
 });
