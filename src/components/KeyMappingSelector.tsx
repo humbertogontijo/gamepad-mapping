@@ -22,12 +22,39 @@ export function KeyMappingSelector({
 
   // Handle key press and mouse button clicks
   useEffect(() => {
+
+    const sortComboKeys = (keys: string[]): string[] => {
+      const modifierPriority: Record<string, number> = {
+        Ctrl: 1,
+        Alt: 2,
+        Shift: 3,
+        Meta: 4,
+      };
+      return keys.sort((a, b) => {
+        const aPriority = modifierPriority[a] || 100;
+        const bPriority = modifierPriority[b] || 100;
+        if (aPriority !== bPriority) {
+          return aPriority - bPriority;
+        }
+        return a.localeCompare(b);
+      });
+    };
+
     const handleKeyDown = (e: KeyboardEvent) => {
       if (isEditing) {
         e.preventDefault()
-        const key = e.key === ' ' ? 'Space' : e.key
-        const label = e.key === ' ' ? 'Space' : e.key.length === 1 ? e.key.toUpperCase() : e.key
-        onKeyPress(key, label)
+
+        const arr = [];
+        let ekey = e.key === ' ' ? 'Space' : e.key
+        arr.push(ekey);
+        if (e.key !== "Alt" && e.altKey) arr.push("Alt");
+        if (e.key !== "Shift" && e.shiftKey) arr.push("Shift");
+        if (e.key !== "Meta" && e.metaKey) arr.push("Meta");
+        if (e.key !== "Ctrl" && e.ctrlKey) arr.push("Ctrl");
+
+        const key = sortComboKeys(arr).join("+");
+
+        onKeyPress(key, key.toUpperCase());
       }
     }
 
@@ -38,13 +65,13 @@ export function KeyMappingSelector({
         if (!buttonMappingPanel) {
           return
         }
-        
+
         const target = e.target as HTMLElement
         // Validate click is within the current ButtonMappingPanel
         if (!buttonMappingPanel.contains(target)) {
           return
         }
-        
+
         // Ignore clicks on interactive elements (buttons, links, etc.)
         if (
           target.tagName === 'BUTTON' ||
@@ -59,12 +86,12 @@ export function KeyMappingSelector({
         ) {
           return // Don't capture clicks on buttons/links
         }
-        
+
         e.preventDefault()
         e.stopPropagation()
         let key: string
         let label: string
-        
+
         if (e.button === 0) {
           key = 'MouseLeft'
           label = 'Left Mouse'
@@ -77,7 +104,7 @@ export function KeyMappingSelector({
         } else {
           return // Unknown button
         }
-        
+
         onKeyPress(key, label)
       }
     }
@@ -86,7 +113,7 @@ export function KeyMappingSelector({
       window.addEventListener('keydown', handleKeyDown)
       window.addEventListener('mousedown', handleMouseDown, true) // Use capture phase
     }
-    
+
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('mousedown', handleMouseDown, true)
