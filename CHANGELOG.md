@@ -1,3 +1,11 @@
+# [1.1.0](https://github.com/humbertogontijo/gamepad-mapping/compare/v1.0.2...1.1.0) (2026-05-31)
+
+
+### Features
+
+* add modifier support ([5452b01](https://github.com/humbertogontijo/gamepad-mapping/commit/5452b016f440cef91a7d9f9839dd6db89866d1eb))
+* add qol changes ([7e3076d](https://github.com/humbertogontijo/gamepad-mapping/commit/7e3076d672096105bff71b51910ad9b062488dfb))
+
 # [1.1.0](https://github.com/humbertogontijo/gamepad-mapping/compare/1.0.2...1.1.0) (2026-04-06)
 
 
