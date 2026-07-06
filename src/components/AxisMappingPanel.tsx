@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { GamepadState } from '../hooks/useGamepad'
-import { GamepadMapping, StickDirection } from '../hooks/useGamepadMapping'
+import { GamepadMapping, StickDirection, StickMappingType } from '../hooks/useGamepadMapping'
 import { getStickDirection, getStickAxes } from '../utils/stickDirection'
 import { DIRECTION_LABELS } from '../constants/directionLabels'
 import {
@@ -19,7 +19,7 @@ interface AxisMappingPanelProps {
   stickIndex: number
   direction: StickDirection
   editingAxis: { gamepadIndex: number; stickIndex: number; direction: StickDirection } | null
-  onSetAxisMapping: (stickIndex: number, direction: StickDirection, key: string, label: string, threshold: number, type?: 'hotkey' | 'mouse', sensitivity?: number, acceleration?: number, invertX?: boolean, invertY?: boolean) => void
+  onSetAxisMapping: (stickIndex: number, direction: StickDirection, key: string, label: string, threshold: number, type?: StickMappingType, sensitivity?: number, acceleration?: number, invertX?: boolean, invertY?: boolean) => void
   onRemoveAxisMapping: (stickIndex: number, direction: StickDirection) => void
   onSetEditingAxis: (value: { gamepadIndex: number; stickIndex: number; direction: StickDirection } | null) => void
 }
@@ -229,4 +229,3 @@ export function AxisMappingPanel({
     </div>
   )
 }
-

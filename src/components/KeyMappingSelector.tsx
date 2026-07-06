@@ -58,32 +58,35 @@ export function KeyMappingSelector({
       }
     }
 
+    const getCurrentMappingItem = () =>
+      containerRef.current?.closest('.button-mapping-item')
+
+    const isEventInsideCurrentMappingItem = (target: EventTarget | null) => {
+      const mappingItem = getCurrentMappingItem()
+      return !!(mappingItem && target instanceof HTMLElement && mappingItem.contains(target))
+    }
+
+    const isInteractiveElement = (target: HTMLElement) => (
+      target.tagName === 'BUTTON' ||
+      target.closest('button') !== null ||
+      target.tagName === 'A' ||
+      target.closest('a') !== null ||
+      target.closest('.btn-map') !== null ||
+      target.closest('.btn-revert') !== null ||
+      target.closest('.btn-remove') !== null ||
+      target.closest('.btn-remove-small') !== null ||
+      target.closest('.btn-edit') !== null
+    )
+
     const handleMouseDown = (e: MouseEvent) => {
       if (isEditing && containerRef.current) {
-        // Only handle clicks within the current ButtonMappingPanel
-        const buttonMappingPanel = containerRef.current.closest('.button-mapping-item')
-        if (!buttonMappingPanel) {
-          return
-        }
-
         const target = e.target as HTMLElement
-        // Validate click is within the current ButtonMappingPanel
-        if (!buttonMappingPanel.contains(target)) {
+        if (!isEventInsideCurrentMappingItem(target)) {
           return
         }
 
         // Ignore clicks on interactive elements (buttons, links, etc.)
-        if (
-          target.tagName === 'BUTTON' ||
-          target.closest('button') !== null ||
-          target.tagName === 'A' ||
-          target.closest('a') !== null ||
-          target.closest('.btn-map') !== null ||
-          target.closest('.btn-revert') !== null ||
-          target.closest('.btn-remove') !== null ||
-          target.closest('.btn-remove-small') !== null ||
-          target.closest('.btn-edit') !== null
-        ) {
+        if (isInteractiveElement(target)) {
           return // Don't capture clicks on buttons/links
         }
 
@@ -109,14 +112,52 @@ export function KeyMappingSelector({
       }
     }
 
+    const handleWheel = (e: WheelEvent) => {
+      if (!isEditing || !containerRef.current) {
+        return
+      }
+
+      const target = e.target as HTMLElement
+      if (!isEventInsideCurrentMappingItem(target) || isInteractiveElement(target)) {
+        return
+      }
+
+      e.preventDefault()
+      e.stopPropagation()
+
+      let key: string
+      let label: string
+      if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+        if (e.deltaX > 0) {
+          key = 'MouseWheelRight'
+          label = 'Wheel Right'
+        } else {
+          key = 'MouseWheelLeft'
+          label = 'Wheel Left'
+        }
+      } else if (e.deltaY > 0) {
+        key = 'MouseWheelDown'
+        label = 'Wheel Down'
+      } else if (e.deltaY < 0) {
+        key = 'MouseWheelUp'
+        label = 'Wheel Up'
+      } else {
+        return
+      }
+
+      onKeyPress(key, label)
+    }
+
     if (isEditing) {
       window.addEventListener('keydown', handleKeyDown)
       window.addEventListener('mousedown', handleMouseDown, true) // Use capture phase
+      window.addEventListener('wheel', handleWheel, { capture: true, passive: false })
     }
 
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('mousedown', handleMouseDown, true)
+      window.removeEventListener('wheel', handleWheel, true)
     }
   }, [isEditing, onKeyPress])
 
@@ -151,4 +192,3 @@ export function KeyMappingSelector({
     </div>
   )
 }
-

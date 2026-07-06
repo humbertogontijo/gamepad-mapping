@@ -1,5 +1,9 @@
 import { GamepadState } from "../hooks/useGamepad";
-import { GamepadMapping, StickDirection } from "../hooks/useGamepadMapping";
+import {
+  GamepadMapping,
+  StickDirection,
+  StickMappingType,
+} from "../hooks/useGamepadMapping";
 import { ButtonMappingPanel } from "./ButtonMappingPanel";
 import { StickMappingPanel } from "./StickMappingPanel";
 import { DpadMappingPanel } from "./DpadMappingPanel";
@@ -19,7 +23,7 @@ interface MappingPanelProps {
     key: string,
     label: string,
     threshold: number,
-    type?: "hotkey" | "mouse",
+    type?: StickMappingType,
     sensitivity?: number,
     acceleration?: number,
     invertX?: boolean,

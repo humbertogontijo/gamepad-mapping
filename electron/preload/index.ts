@@ -38,6 +38,9 @@ contextBridge.exposeInMainWorld('mouseSimulator', {
   buttonToggle: (button: string, down: boolean) => {
     return ipcRenderer.invoke('mouse-button-toggle', button, down)
   },
+  scrollMouse: (deltaX: number, deltaY: number) => {
+    return ipcRenderer.invoke('mouse-scroll', deltaX, deltaY)
+  },
 })
 
 // --------- Preload scripts loading ---------

@@ -12,10 +12,14 @@ import {
 } from "electron";
 import os from "node:os";
 import path from "node:path";
+import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import { update } from "./update";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const require = createRequire(import.meta.url);
+
+const { libnut } = require("@nut-tree-fork/libnut/dist/import_libnut");
 
 // The built directory structure
 //
@@ -207,6 +211,7 @@ const charKeyMap: Record<string, Key> = {
   "`": Key.Grave,
 };
 keyboard.config.autoDelayMs = 0;
+mouse.config.autoDelayMs = 0;
 
 // Convert key name to nut-js Key enum
 function getNutKey(key: string): Key | null {
@@ -303,6 +308,25 @@ ipcMain.handle(
   }
 );
 
+// Handle mouse wheel scrolling requests
+ipcMain.handle("mouse-scroll", async (_event, deltaX: number, deltaY: number) => {
+  try {
+    const stepsX = Math.trunc(deltaX);
+    const stepsY = Math.trunc(deltaY);
+    if (stepsX === 0 && stepsY === 0) {
+      return { success: true };
+    }
+
+    // libnut uses positive Y for wheel-up, while the renderer uses
+    // positive Y for content-down to match DOM WheelEvent semantics.
+    libnut.scrollMouse(stepsX, -stepsY);
+
+    return { success: true };
+  } catch (error) {
+    console.error("Error scrolling mouse:", error);
+    return { success: false, error: String(error) };
+  }
+});
 
 // Handle key toggle requests
 ipcMain.handle("key-toggle", async (_event, key: string, down: boolean) => {

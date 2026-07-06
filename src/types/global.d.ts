@@ -5,6 +5,7 @@ export interface KeySimulator {
 export interface MouseSimulator {
   moveMouse: (deltaX: number, deltaY: number) => Promise<{ success: boolean; error?: string }>
   buttonToggle: (button: string, down: boolean) => Promise<{ success: boolean; error?: string }>
+  scrollMouse: (deltaX: number, deltaY: number) => Promise<{ success: boolean; error?: string }>
 }
 
 export interface IpcRenderer {
@@ -21,4 +22,3 @@ declare global {
     ipcRenderer?: IpcRenderer
   }
 }
-
