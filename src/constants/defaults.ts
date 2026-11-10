@@ -13,6 +13,12 @@ export const DEFAULT_MOUSE_ACCELERATION = 1.0
 export const DEFAULT_MOUSE_INVERT_X = false
 export const DEFAULT_MOUSE_INVERT_Y = false
 
+// Scroll control defaults
+export const DEFAULT_SCROLL_SENSITIVITY = 1.0
+export const DEFAULT_SCROLL_ACCELERATION = 1.0
+export const DEFAULT_SCROLL_INVERT_X = false
+export const DEFAULT_SCROLL_INVERT_Y = false
+
 // Button detection defaults
 export const DEFAULT_DRIFT_THRESHOLD = 0.1
 
@@ -33,4 +39,3 @@ export const SENSITIVITY_STEP = 0.1
 export const MIN_ACCELERATION = 0.0
 export const MAX_ACCELERATION = 2.0
 export const ACCELERATION_STEP = 0.1
-

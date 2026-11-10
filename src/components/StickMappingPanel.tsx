@@ -1,8 +1,13 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { GamepadState } from "../hooks/useGamepad";
-import { GamepadMapping, StickDirection } from "../hooks/useGamepadMapping";
+import {
+  GamepadMapping,
+  StickDirection,
+  StickMappingType,
+} from "../hooks/useGamepadMapping";
 import { StickHotkeyMode } from "./StickHotkeyMode";
 import { StickMouseMode } from "./StickMouseMode";
+import { StickScrollMode } from "./StickScrollMode";
 import { KeyMappingSelector } from "./KeyMappingSelector";
 import { MappingActions } from "./MappingPanel";
 import { getSticks, getButtonConfig } from "../constants/controllerMappings";
@@ -24,7 +29,7 @@ interface StickMappingPanelProps {
     key: string,
     label: string,
     threshold: number,
-    type?: "hotkey" | "mouse",
+    type?: StickMappingType,
     sensitivity?: number,
     acceleration?: number,
     invertX?: boolean,
@@ -58,23 +63,28 @@ export function StickMappingPanel({
   onRemoveButtonMapping,
   onSetEditingButton,
 }: StickMappingPanelProps) {
-  const [mappingType, setMappingType] = useState<"hotkey" | "mouse">("hotkey");
-  const previousMappingTypeRef = useRef<"hotkey" | "mouse" | null>(null);
+  const [mappingType, setMappingType] = useState<StickMappingType>("hotkey");
+  const previousMappingTypeRef = useRef<StickMappingType | null>(null);
 
   const stickMappings =
     mapping?.axisMappings.filter((m) => m.stickIndex === stickIndex) || [];
   const mouseMapping = stickMappings.find((m) => m.type === "mouse");
+  const scrollMapping = stickMappings.find((m) => m.type === "scroll");
   const isMouseMode = mouseMapping !== undefined || mappingType === "mouse";
+  const isScrollMode = scrollMapping !== undefined || mappingType === "scroll";
 
   // Sync mapping type with existing mappings
   useEffect(() => {
     if (mouseMapping) {
       setMappingType("mouse");
       previousMappingTypeRef.current = "mouse";
+    } else if (scrollMapping) {
+      setMappingType("scroll");
+      previousMappingTypeRef.current = "scroll";
     } else {
       setMappingType("hotkey");
     }
-  }, [mouseMapping]);
+  }, [mouseMapping, scrollMapping]);
 
   const removeAllStickMappings = (stickIndex: number) => {
     const stickMappings =
@@ -228,12 +238,13 @@ export function StickMappingPanel({
         <label>Mapping Mode:</label>
         <div className="mode-buttons">
           <button
-            className={`mode-button ${!isMouseMode ? "active" : ""}`}
+            className={`mode-button ${!isMouseMode && !isScrollMode ? "active" : ""}`}
             onClick={() => {
-              // Switch to hotkey mode - remove mouse mapping if exists
-              if (mouseMapping) {
-                onRemoveAxisMapping(stickIndex, mouseMapping.direction);
-              }
+              stickMappings.forEach((m) => {
+                if (m.type !== "hotkey") {
+                  onRemoveAxisMapping(stickIndex, m.direction);
+                }
+              });
               // Track that we're switching modes
               previousMappingTypeRef.current = mappingType;
               // Always set to hotkey mode and clear editing state
@@ -248,9 +259,7 @@ export function StickMappingPanel({
           <button
             className={`mode-button ${isMouseMode ? "active" : ""}`}
             onClick={() => {
-              // Switch to mouse mode - remove all hotkey mappings for this stick first
               if (!mouseMapping) {
-                // Remove all existing hotkey mappings for this stick
                 stickMappings.forEach((m) => {
                   if (m.type !== "mouse") {
                     onRemoveAxisMapping(stickIndex, m.direction);
@@ -268,10 +277,37 @@ export function StickMappingPanel({
           >
             Mouse Control
           </button>
+          <button
+            className={`mode-button ${isScrollMode ? "active" : ""}`}
+            onClick={() => {
+              if (!scrollMapping) {
+                stickMappings.forEach((m) => {
+                  if (m.type !== "scroll") {
+                    onRemoveAxisMapping(stickIndex, m.direction);
+                  }
+                });
+                previousMappingTypeRef.current = mappingType;
+                setMappingType("scroll");
+                if (editingAxis?.stickIndex === stickIndex) {
+                  onSetEditingAxis(null);
+                }
+              }
+            }}
+          >
+            Scroll Control
+          </button>
         </div>
       </div>
 
-      {isMouseMode ? (
+      {isScrollMode ? (
+        <StickScrollMode
+          mapping={mapping}
+          stickIndex={stickIndex}
+          onSetAxisMapping={onSetAxisMapping}
+          onRemoveAxisMapping={onRemoveAxisMapping}
+          previousMappingType={previousMappingTypeRef.current}
+        />
+      ) : isMouseMode ? (
         <StickMouseMode
           mapping={mapping}
           stickIndex={stickIndex}

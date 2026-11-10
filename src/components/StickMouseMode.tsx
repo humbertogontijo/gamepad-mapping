@@ -1,5 +1,5 @@
 import { useState, useRef, useCallback, useEffect } from 'react'
-import { GamepadMapping, StickDirection } from '../hooks/useGamepadMapping'
+import { GamepadMapping, StickDirection, StickMappingType } from '../hooks/useGamepadMapping'
 import { MappingActions } from './MappingPanel'
 import {
   DEFAULT_STICK_THRESHOLD_MOUSE,
@@ -13,9 +13,9 @@ import './MappingPanel.css'
 interface StickMouseModeProps {
   mapping?: GamepadMapping
   stickIndex: number
-  onSetAxisMapping: (stickIndex: number, direction: StickDirection, key: string, label: string, threshold: number, type?: 'hotkey' | 'mouse', sensitivity?: number, acceleration?: number, invertX?: boolean, invertY?: boolean) => void
+  onSetAxisMapping: (stickIndex: number, direction: StickDirection, key: string, label: string, threshold: number, type?: StickMappingType, sensitivity?: number, acceleration?: number, invertX?: boolean, invertY?: boolean) => void
   onRemoveAxisMapping: (stickIndex: number, direction: StickDirection) => void
-  previousMappingType: 'hotkey' | 'mouse' | null
+  previousMappingType: StickMappingType | null
 }
 
 export function StickMouseMode({
@@ -203,4 +203,3 @@ export function StickMouseMode({
     </div>
   )
 }
-
