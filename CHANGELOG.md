@@ -1,3 +1,10 @@
+## [1.1.1](https://github.com/humbertogontijo/gamepad-mapping/compare/1.1.0...1.1.1) (2026-11-10)
+
+
+### Bug Fixes
+
+* pin matching React versions ([f630d51](https://github.com/humbertogontijo/gamepad-mapping/commit/f630d5113b88ee3d89402242e8672ca9a3d8116c))
+
 # [1.1.0](https://github.com/humbertogontijo/gamepad-mapping/compare/v1.0.2...1.1.0) (2026-05-31)
 
 
